@@ -7,7 +7,11 @@
  */
 
 $filename = $argv[1];
-
+$part = $argv[2];
+if ($part != 1 && $part != 2) {
+    var_dump('MUST BE 1 OR 2');
+    exit(0);
+}
 $contents = file_get_contents($filename, true);
 
 $contentsArray = explode("\n", $contents);
@@ -15,28 +19,30 @@ $contentsArray = explode("\n", $contents);
 $total = 0;
 
 foreach ($contentsArray as $dimension) {
-	$dimensionArray = explode("x", $dimension);
+    $dimensionArray = explode("x", $dimension);
 
-var_dump($dimensionArray);
-	
-	if (!empty($dimensionArray)) {
-		$length = (int) $dimensionArray[0];
-var_dump ($length);
-		$width = (int) $dimensionArray[1];
-var_dump ($width);		
-		$height = (int) $dimensionArray[2];
-var_dump ($height);
+    if (!empty($dimensionArray)) {
+        $length = (int)$dimensionArray[0];
+        $width = (int)$dimensionArray[1];
+        $height = (int)$dimensionArray[2];
 
-		$surfaceArea = 2*$length*$width + 2*$width*$height + 2*$height*$length;
-var_dump ($surfaceArea);
-		$withSide = $surfaceArea + min($length*$width , $width*$height , $height*$length);
-var_dump ($withSide);
-		$total += $withSide;
-var_dump ($total);
-	}
-	if ($total > 1000) {
-		//die;
-	}
+        if ($part == 1) {
+            $surfaceArea = 2 * $length * $width + 2 * $width * $height + 2 * $height * $length;
+            $withSide = $surfaceArea + min($length * $width, $width * $height, $height * $length);
+            $total += $withSide;
+        }
+        if ($part == 2) {
+            $lengthP = 2 * $length;
+            $widthP = 2 * $width;
+            $heightP = 2 * $height;
+
+            $volume = $length * $width * $height;
+            $total += $volume + min($lengthP + $widthP, $lengthP + $heightP, $heightP + $widthP);
+        }
+    }
+    if ($total > 1000) {
+        //die;
+    }
 }
 
-echo "This is the total: " . $total; //1588178
+echo "This is the total: " . $total; 
